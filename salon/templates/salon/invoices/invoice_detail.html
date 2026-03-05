@@ -1,0 +1,117 @@
+{% extends "salon/base.html" %}
+
+{% block title %}Рахунок #{{ work.check_id }} — Перукарня CRM{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-dark text-white text-center">
+                <h3 class="mb-0">ПЕРУКАРНЯ</h3>
+                <small>
+                    Філія: {{ work.branch.name }} |
+                    {{ work.branch.address }}
+                </small>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <h4>
+                        Рахунок-фактура № {{ work.check_id }}
+                    </h4>
+                    <p>від {{ work.work_date|date:"d.m.Y" }}</p>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <strong>Клієнт:</strong><br>
+                        {{ work.client.full_name }}<br>
+                        Анкета №: {{ work.client.pk }}<br>
+                        Тел.: {{ work.client.phone }}
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <strong>Категорія:</strong>
+                        {{ work.client.category.name }}<br>
+                        <strong>Візитів:</strong>
+                        {{ work.client.total_visits }}
+                    </div>
+                </div>
+
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Код</th><th>Назва послуги</th>
+                            <th>К-сть</th><th>Ціна</th>
+                            <th>Знижка</th><th>Сума</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ work.haircut.pk }}</td>
+                            <td>{{ work.haircut.name }}</td>
+                            <td>1</td>
+                            <td>{{ base_price }} грн</td>
+                            <td>{{ discount_percent }}%</td>
+                            <td>
+                                <strong>
+                                    {{ work.final_price }} грн
+                                </strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="row">
+                    <div class="col-md-6"></div>
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="text-end">
+                                    Сума знижки:
+                                </td>
+                                <td class="text-end">
+                                    <strong>
+                                        {{ discount_amount }} грн
+                                    </strong>
+                                </td>
+                            </tr>
+                            <tr class="border-top">
+                                <td class="text-end fs-5">
+                                    РАЗОМ ДО СПЛАТИ:
+                                </td>
+                                <td class="text-end fs-5">
+                                    <strong>
+                                        {{ work.final_price }} грн
+                                    </strong>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <hr>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <p>Послуги надав: _________________</p>
+                        <p>Підпис: _________________</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <p>Послуги прийняв: ________________</p>
+                        <p>Підпис: _________________</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <button onclick="window.print()"
+                    class="btn btn-outline-dark">
+                <i class="bi bi-printer"></i> Друкувати
+            </button>
+            <a href="{% url 'salon:work_list' %}"
+               class="btn btn-secondary">
+                Назад до журналу
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

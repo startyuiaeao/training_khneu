@@ -1,0 +1,118 @@
+{% extends "salon/base.html" %}
+
+{% block title %}{{ client.full_name }} — Перукарня CRM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-person"></i> {{ client.full_name }}</h1>
+    <a href="{% url 'salon:client_edit' client.pk %}"
+       class="btn btn-warning">
+        <i class="bi bi-pencil"></i> Редагувати
+    </a>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <strong>Анкетні дані</strong>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th>Анкета №</th>
+                        <td>{{ client.pk }}</td>
+                    </tr>
+                    <tr>
+                        <th>Прізвище</th>
+                        <td>{{ client.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Ім'я</th>
+                        <td>{{ client.first_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>По батькові</th>
+                        <td>{{ client.middle_name|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Стать</th>
+                        <td>{{ client.gender }}</td>
+                    </tr>
+                    <tr>
+                        <th>Телефон</th>
+                        <td>{{ client.phone }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ client.email|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Дата народження</th>
+                        <td>{{ client.birth_date|date:"d.m.Y"|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Дата реєстрації</th>
+                        <td>{{ client.registered_at|date:"d.m.Y" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <strong>Статус клієнта</strong>
+            </div>
+            <div class="card-body text-center">
+                <p class="display-4">{{ client.total_visits }}</p>
+                <p class="text-muted">візитів</p>
+                <span class="badge bg-{% if client.is_loyal %}success{% else %}secondary{% endif %} fs-5">
+                    {{ client.category.name }}
+                </span>
+                {% if client.is_loyal %}
+                    <p class="mt-2 text-success">
+                        <i class="bi bi-star-fill"></i>
+                        Знижка {{ client.discount }}%
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Історія послуг</h3>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Чек #</th><th>Стрижка</th><th>Філія</th>
+                <th>Дата</th><th>Сума</th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for w in works %}
+            <tr>
+                <td>{{ w.check_id }}</td>
+                <td>{{ w.haircut.name }}</td>
+                <td>{{ w.branch.name }}</td>
+                <td>{{ w.work_date|date:"d.m.Y" }}</td>
+                <td>{{ w.final_price }} грн</td>
+                <td>
+                    <a href="{% url 'salon:invoice_detail' w.pk %}"
+                       class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-receipt"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted">
+                    Послуг ще не надано
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

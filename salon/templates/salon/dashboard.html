@@ -1,0 +1,84 @@
+{% extends "salon/base.html" %}
+
+{% block title %}Головна — Перукарня CRM{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">
+    <i class="bi bi-speedometer2"></i> Панель приладів
+</h1>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-3 col-sm-6">
+        <div class="card text-bg-primary h-100">
+            <div class="card-body text-center d-flex flex-column justify-content-center" style="min-height: 160px;">
+                <h5 class="card-title">Клієнти</h5>
+                <p class="display-6">{{ total_clients }}</p>
+                <small>Постійних: {{ loyal_clients }}</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card text-bg-success h-100">
+            <div class="card-body text-center d-flex flex-column justify-content-center" style="min-height: 160px;">
+                <h5 class="card-title">Стрижки</h5>
+                <p class="display-6">{{ total_haircuts }}</p>
+                <small>Активних у каталозі</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card text-bg-info h-100">
+            <div class="card-body text-center d-flex flex-column justify-content-center" style="min-height: 160px;">
+                <h5 class="card-title">Філії</h5>
+                <p class="display-6">{{ total_branches }}</p>
+                <small>Відкритих філій</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card text-bg-warning h-100">
+            <div class="card-body text-center d-flex flex-column justify-content-center" style="min-height: 160px;">
+                <h5 class="card-title">Виконано робіт</h5>
+                <p class="display-6">{{ total_works }}</p>
+                <small>Усього послуг надано</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Останні виконані роботи</h3>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Чек #</th><th>Клієнт</th><th>Стрижка</th>
+                <th>Філія</th><th>Дата</th><th>Сума</th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for w in recent_works %}
+            <tr>
+                <td>{{ w.check_id }}</td>
+                <td>{{ w.client.full_name }}</td>
+                <td>{{ w.haircut.name }}</td>
+                <td>{{ w.branch.name }}</td>
+                <td>{{ w.work_date|date:"d.m.Y" }}</td>
+                <td>{{ w.final_price }} грн</td>
+                <td>
+                    <a href="{% url 'salon:invoice_detail' w.pk %}"
+                       class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-receipt"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center text-muted">
+                    Робіт ще немає
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

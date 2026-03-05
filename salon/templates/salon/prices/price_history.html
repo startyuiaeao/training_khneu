@@ -1,0 +1,86 @@
+{% extends "salon/base.html" %}
+
+{% block title %}Прайс-листи — Перукарня CRM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>
+        <i class="bi bi-currency-dollar"></i>
+        Прайс-листи (Історія цін)
+    </h1>
+    <a href="{% url 'salon:pricelist_create' %}"
+       class="btn btn-success">
+        <i class="bi bi-plus-lg"></i> Новий прайс-лист
+    </a>
+</div>
+
+{% for pl in pricelists %}
+<div class="card mb-4 {% if pl.is_current %}border-success{% else %}border-secondary{% endif %}">
+    <div class="card-header d-flex justify-content-between align-items-center
+                {% if pl.is_current %}bg-success text-white{% else %}bg-light{% endif %}">
+        <div>
+            <strong>{{ pl.branch.name }}</strong> |
+            {{ pl.valid_from|date:"d.m.Y" }} —
+            {{ pl.valid_to|date:"d.m.Y"|default:"теперішній час" }}
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            {% if pl.is_current %}
+                <span class="badge bg-light text-success">
+                    Поточний
+                </span>
+            {% else %}
+                <span class="badge bg-secondary">Архівний</span>
+            {% endif %}
+            <a href="{% url 'salon:pricelist_add_haircut' pl.pk %}"
+               class="btn btn-sm btn-outline-light">
+                <i class="bi bi-plus"></i> Додати ціну
+            </a>
+            <a href="{% url 'salon:pricelist_edit' pl.pk %}"
+               class="btn btn-sm btn-outline-warning">
+                <i class="bi bi-pencil"></i> Редагувати
+            </a>
+            {% if pl.is_current %}
+            <form method="post"
+                  action="{% url 'salon:pricelist_archive' pl.pk %}"
+                  class="d-inline"
+                  onsubmit="return confirm('Перемістити прайс-лист в архів?')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-archive"></i> В архів
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-sm table-striped mb-0">
+            <thead>
+                <tr>
+                    <th>Стрижка</th><th>Стать</th>
+                    <th>Ціна (грн)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in pl.items.all %}
+                <tr>
+                    <td>{{ item.haircut.name }}</td>
+                    <td>{{ item.haircut.gender }}</td>
+                    <td>
+                        <strong>{{ item.price }}</strong> грн
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="text-muted">
+                        Ціни не додано
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% empty %}
+<div class="alert alert-info">Прайс-листів ще немає.</div>
+{% endfor %}
+{% endblock %}

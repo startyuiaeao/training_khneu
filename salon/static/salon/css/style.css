@@ -1,0 +1,127 @@
+/* Кастомні стилі перукарні CRM */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f6fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+}
+
+.navbar-brand i {
+    margin-right: 5px;
+}
+
+/* Карточки дашборда — однаковий розмір */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card .display-6 {
+    font-weight: 700;
+}
+
+.card.h-100 .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Таблиці */
+.table th {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Бейджі */
+.badge {
+    font-size: 0.85em;
+    padding: 0.4em 0.8em;
+}
+
+/* Форми */
+.form-control:focus,
+.form-select:focus {
+    border-color: #6c5ce7;
+    box-shadow: 0 0 0 0.2rem rgba(108, 92, 231, 0.25);
+}
+
+/* Чекбокси філій у звітах */
+.form-check {
+    padding-left: 1.8em;
+}
+
+.form-check .form-check-input {
+    margin-top: 0.3em;
+}
+
+.form-check-input:checked {
+    background-color: #6c5ce7;
+    border-color: #6c5ce7;
+}
+
+.form-check-label {
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Кнопки */
+.btn-primary {
+    background-color: #6c5ce7;
+    border-color: #6c5ce7;
+}
+
+.btn-primary:hover {
+    background-color: #5b4cdb;
+    border-color: #5b4cdb;
+}
+
+/* Футер */
+footer {
+    margin-top: auto;
+}
+
+/* Друк */
+@media print {
+    .navbar, footer, .btn, .alert {
+        display: none !important;
+    }
+    .card {
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+    }
+    body {
+        background: white;
+    }
+}
+
+/* Адаптивність */
+@media (max-width: 576px) {
+    .display-6 {
+        font-size: 1.5rem;
+    }
+    h1 {
+        font-size: 1.5rem;
+    }
+}

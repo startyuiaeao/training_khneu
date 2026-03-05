@@ -1,0 +1,95 @@
+{% extends "salon/base.html" %}
+
+{% block title %}Загальний звіт — Перукарня CRM{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">
+    <i class="bi bi-globe"></i>
+    Загальний звіт про надані послуги (усі філії)
+</h1>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label for="{{ form.date_from.id_for_label }}"
+                       class="form-label">
+                    {{ form.date_from.label }}
+                </label>
+                {{ form.date_from }}
+                {% if form.date_from.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.date_from.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-4">
+                <label for="{{ form.date_to.id_for_label }}"
+                       class="form-label">
+                    {{ form.date_to.label }}
+                </label>
+                {{ form.date_to }}
+                {% if form.date_to.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.date_to.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-4">
+                <button type="submit"
+                        class="btn btn-primary w-100">
+                    <i class="bi bi-funnel"></i> Сформувати звіт
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if works %}
+<div class="alert alert-success">
+    <strong>Період:</strong>
+    {{ form.date_from.value }} — {{ form.date_to.value }}
+    | <strong>Усі філії</strong>
+    | Записів: {{ works|length }}
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Дата</th><th>Філія</th><th>Чек #</th>
+                <th>Анкета</th><th>ПІБ Клієнта</th>
+                <th>Послуга</th><th>Дохід (грн)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for w in works %}
+            <tr>
+                <td>{{ w.work_date|date:"d.m.Y" }}</td>
+                <td>{{ w.branch.name }}</td>
+                <td>{{ w.check_id }}</td>
+                <td>{{ w.client.pk }}</td>
+                <td>{{ w.client.full_name }}</td>
+                <td>{{ w.haircut.name }}</td>
+                <td>{{ w.final_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot class="table-dark">
+            <tr>
+                <td colspan="6" class="text-end">
+                    <strong>ВСЬОГО ПО МЕРЕЖІ:</strong>
+                </td>
+                <td>
+                    <strong>{{ total_income|floatformat:2 }} грн</strong>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+{% elif form.is_bound %}
+<div class="alert alert-info">
+    За обраний період послуг не надано.
+</div>
+{% endif %}
+{% endblock %}

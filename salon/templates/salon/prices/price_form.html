@@ -1,0 +1,85 @@
+{% extends "salon/base.html" %}
+
+{% block title %}{{ title }} — Перукарня CRM{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">
+    <i class="bi bi-currency-dollar"></i> {{ title }}
+</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}"
+                                   class="form-label">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ field.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg"></i> Зберегти
+                    </button>
+                    <a href="{% url 'salon:price_history' %}"
+                       class="btn btn-secondary">
+                        Назад
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if items %}
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <strong>Додані ціни</strong>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Стрижка</th><th>Ціна (грн)</th><th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item.haircut.name }}</td>
+                            <td>{{ item.price }} грн</td>
+                            <td class="text-end">
+                                <a href="{% url 'salon:pricelist_edit_haircut' item.pk %}"
+                                   class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form method="post"
+                                      action="{% url 'salon:pricelist_delete_haircut' item.pk %}"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Видалити ціну?')">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

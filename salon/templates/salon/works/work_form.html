@@ -1,0 +1,86 @@
+{% extends "salon/base.html" %}
+
+{% block title %}{{ title }} — Перукарня CRM{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">
+    <i class="bi bi-journal-plus"></i> {{ title }}
+</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" novalidate id="workForm">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}"
+                                   class="form-label">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ field.errors.0 }}
+                                </div>
+                            {% endif %}
+                            {% if field.name == "work_date" %}
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle"></i>
+                                    За замовчуванням — сьогоднішня
+                                    дата.
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn btn-primary"
+                            id="submitBtn">
+                        <i class="bi bi-check-lg"></i> Зафіксувати
+                    </button>
+                    <a href="{% url 'salon:work_list' %}"
+                       class="btn btn-secondary">
+                        Скасувати
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const clientSelect = document.getElementById('id_client');
+    const haircutSelect = document.getElementById('id_haircut');
+    const branchSelect = document.getElementById('id_branch');
+
+    if (!clientSelect || !haircutSelect || !branchSelect) return;
+
+    // При зміні клієнта — перезавантажуємо сторінку через
+    // GET з параметрами, щоб сервер відсортував стрижки.
+    // Робота НЕ фіксується автоматично.
+    clientSelect.addEventListener('change', function() {
+        const currentHaircut = haircutSelect.value;
+        const currentBranch = branchSelect.value;
+        const dateField = document.getElementById('id_work_date');
+        const currentDate = dateField ? dateField.value : '';
+
+        const url = new URL(window.location.href.split('?')[0]);
+        url.searchParams.set('client', clientSelect.value);
+        if (currentHaircut) {
+            url.searchParams.set('haircut', currentHaircut);
+        }
+        if (currentBranch) {
+            url.searchParams.set('branch', currentBranch);
+        }
+        if (currentDate) {
+            url.searchParams.set('work_date', currentDate);
+        }
+
+        window.location.href = url.toString();
+    });
+});
+</script>
+{% endblock %}
